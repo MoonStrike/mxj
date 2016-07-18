@@ -884,12 +884,18 @@ func mapToXmlIndent(doIndent bool, s *string, key string, value interface{}, pp 
 			if xmlEscapeChars {
 				v = escapeChars(v)
 			}
+			if xmlCdata {
+				v = makeCdata(v)
+			}
 			elen = len(v)
 			if elen > 0 {
 				*s += ">" + v
 			}
 		case float64, bool, int, int32, int64, float32:
 			v := fmt.Sprintf("%v", value)
+			if xmlCdata {
+				v = makeCdata(v)
+			}
 			elen = len(v) // always > 0
 			*s += ">" + v
 		case []byte: // NOTE: byte is just an alias for uint8
@@ -897,6 +903,9 @@ func mapToXmlIndent(doIndent bool, s *string, key string, value interface{}, pp 
 			v := string(value.([]byte))
 			if xmlEscapeChars {
 				v = escapeChars(v)
+			}
+			if xmlCdata {
+				v = makeCdata(v)
 			}
 			elen = len(v)
 			if elen > 0 {
